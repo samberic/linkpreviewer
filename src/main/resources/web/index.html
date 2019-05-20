@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<textarea id="text"></textarea>
+<button id="getDesc">submit</button>
+
+<img id="image"/>
+<h1 id="title"></h1>
+<div id="desc"/>
+
+<script>
+        var urlRegex = /(https?:\/\/[^\s]+)/g;
+
+
+    const $ = document.querySelector.bind(document);
+
+    document.addEventListener('DOMContentLoaded', (event) => {
+        console.log('DOM fully loaded and parsed');
+        $('#text').addEventListener("keyup", (event)=>{
+            var  m = urlRegex.exec($('#text').value)
+            if(m){
+                let firstUrl = m[0];
+
+                let urlToPreview = encodeURIComponent(firstUrl);
+                fetch('/v1/' + urlToPreview)
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (myJson) {
+                        console.log(JSON.stringify(myJson));
+                        $('#image').src = myJson.image;
+                        $('#title').innerHTML = myJson.title;
+                        $('#desc').innerHTML = myJson.desc;
+
+                    });
+            }
+        })
+    });
+</script>
+</body>
+</html>
